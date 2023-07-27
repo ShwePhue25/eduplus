@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Course;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
@@ -39,5 +40,11 @@ class Teacher extends Authenticatable
     {
 
         return $this->belongsToMany(Course::class,'teacher_courses', 'course_id','teacher_id');
+    }
+
+    public function students()
+    {
+
+        return $this->belongsToMany(User::class, 'teachers_students', 'teacher_id','user_id');
     }
 }
