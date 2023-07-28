@@ -11,8 +11,10 @@ use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubcategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +28,7 @@ use App\Http\Controllers\Admin\CategoryController;
 */
 
 /**Teacher Routes*/
-Route::group(['middleware' => 'admin'], function () {
+// Route::group(['middleware' => 'admin'], function () {
 Route::get('/teacher/login',[LoginController::class,'showTeacherLoginForm'])->name('teacher.login-view');
 Route::post('/teacher/login',[LoginController::class,'loginAsTeacher'])->name('teacher.login');
 Route::get('/teacher/register',[RegisterController::class,'showTeacherRegisterForm'])->name('teacher.register-view');
@@ -40,7 +42,7 @@ Route::get('/meeting/create', function(){
 Route::get('/success', function(){
     return view('teacher.success');
 });
-});
+// });
 
 /**User Routes*/
 Route::post('/phone/register', [AuthController::class,'getStart'])->name('register');
@@ -66,7 +68,7 @@ Route::get('/student/dashboard', function () {
 })->name('dashboard');
 
 /**Admin Routes */
-// Route::group(['middleware' => 'admin'], function () {
+// Route::group(['middleware' => 'isAdmin'], function () {
 Route::get('/admin/login',[LoginController::class,'showAdminLoginForm'])->name('admin.login-view');
 Route::post('/admin/login',[LoginController::class,'adminLogin'])->name('admin.login');
 Route::get('/admin/register',[RegisterController::class,'showAdminRegisterForm'])->name('admin.register-view');
@@ -90,7 +92,6 @@ Route::get('/levels/{level}', [LevelController::class, 'show'])->name('levels.sh
 Route::get('/levels/{level}/edit', [LevelController::class, 'edit'])->name('levels.edit');
 Route::put('/levels/{level}', [LevelController::class, 'update'])->name('levels.update');
 Route::delete('/levels/{level}', [LevelController::class, 'destroy'])->name('levels.destroy');
-// });
 
 /**Section routes */
 Route::get('/sections', [SectionController::class, 'index'])->name('sections.index');
@@ -118,6 +119,14 @@ Route::get('/categories/{id}/edit', [CategoryController::class,'edit'])->name('c
 Route::put('/categories/{id}', [CategoryController::class,'update'])->name('categories.update');
 Route::delete('/categories/{id}', [CategoryController::class,'destroy'])->name('categories.destroy');
 
+/**Subategory routes*/
+Route::get('/subcategories', [SubcategoryController::class,'index'])->name('subcategories.index');
+Route::get('/subcategories/create', [SubcategoryController::class,'create'])->name('subcategories.create');
+Route::post('/subcategories', [SubcategoryController::class,'store'])->name('subcategories.store');
+Route::get('/subcategories/{id}/edit', [SubcategoryController::class,'edit'])->name('subcategories.edit');
+Route::put('/subcategories/{id}', [SubcategoryController::class,'update'])->name('subcategories.update');
+Route::delete('/subcategories/{id}', [SubcategoryController::class,'destroy'])->name('subcategories.destroy');
+
 /**Course routes */
 Route::get('/courses', [CourseController::class,'index'])->name('courses.index');
 Route::get('/courses/create', [CourseController::class,'create'])->name('courses.create');
@@ -126,3 +135,15 @@ Route::get('/courses/{id}', [CourseController::class,'show'])->name('courses.sho
 Route::get('/courses/{id}/edit', [CourseController::class,'edit'])->name('courses.edit');
 Route::put('/courses/{id}', [CourseController::class,'update'])->name('courses.update');
 Route::delete('/courses/{id}', [CourseController::class,'destroy'])->name('courses.destroy');
+Route::get('/teachers/{teacherId}/courses', [CourseController::class, 'coursesTaughtByTeacher'])->name('courses.taught.by.teacher');
+
+/**Teacher routes */
+Route::get('/teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
+Route::post('/teachers', [TeacherController::class, 'store'])->name('teachers.store');
+Route::get('/teachers/{teacher}/edit', [TeacherController::class, 'edit'])->name('teachers.edit');
+Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('teachers.update');
+Route::delete('/teachers/{teacher}', [TeacherController::class, 'destroy'])->name('teachers.destroy');
+Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('teachers.show');
+Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
+
+// });

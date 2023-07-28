@@ -32,6 +32,15 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="subcategory_id">Subcategory:</label>
+                                <select name="subcategory_id" id="subcategory_id">
+                                    @foreach ($subcategories as $subcategory)
+                                        <option value="{{ $subcategory->id }}">{{ $subcategory->name }}</option>
+                                    @endforeach
+                                </select><br>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="level_id">Choose Level:</label>
                                 <select name="level_id" id="level_id">
                                     @foreach ($levels as $level)
@@ -54,6 +63,15 @@
                                 <select name="section_id[]" id="section_id[]">
                                     @foreach ($sections as $section)
                                         <option value="{{ $section->id }}">{{ $section->name }}</option>
+                                    @endforeach
+                                </select><br>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="teacher_id[]">Assigned Teacher:</label>
+                                <select name="teacher_id[]" id="teacher_id[]">
+                                    @foreach ($teachers as $teacher)
+                                        <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
                                     @endforeach
                                 </select><br>
                             </div>

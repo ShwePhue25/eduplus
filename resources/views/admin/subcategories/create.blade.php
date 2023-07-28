@@ -1,4 +1,4 @@
-<!-- levels.create.blade.php -->
+<!-- subcategoriss.create.blade.php -->
 
 @extends('layouts.app')
 
@@ -7,13 +7,13 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Add Level</div>
+                    <div class="card-header">Add Subcategory</div>
 
                     <div class="card-body">
-                        <form action="{{ route('levels.store') }}" method="POST">
+                        <form action="{{ route('subcategories.store') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <label for="name">Level Name</label>
+                                <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">

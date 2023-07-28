@@ -14,6 +14,7 @@
                         <th>Level</th>
                         <th>Class</th>
                         <th>Section</th>
+                        <th>Assigned Teacher</th>
                         <th>Description</th>
                         <th>Price</th>
                         <th>Period</th>
@@ -45,6 +46,11 @@
                                 <td>{{ $section->name }}</td>
                             @empty
                                 <td>No section found</td>
+                            @endforelse
+                            @forelse ($course->teachers as $teacher)
+                                <td>{{ $teacher->name }}</td>
+                            @empty
+                                <td>No teacher found</td>
                             @endforelse
                             <td>{{ $course->description }}</td>
                             <td>{{ $course->price }}</td>

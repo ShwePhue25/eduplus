@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('password');
             $table->timestamps();
         });
+        DB::statement("ALTER TABLE users AUTO_INCREMENT = 1;");
     }
 
     /**

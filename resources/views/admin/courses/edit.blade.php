@@ -65,6 +65,16 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="teacher">Assigned Teacher:</label>
+                                <select name="teacher_id[]" id="teacher_id" multiple>
+                                    @foreach ($teachers as $teacher)
+                                        <option value="{{ $teacher->id }}"
+                                            @if ($course->teachers->contains($teacher->id)) selected @endif>{{ $teacher->name }}</option>
+                                    @endforeach
+                                </select><br>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="description">Description:</label>
                                 <textarea name="description" id="description" required>{{ $course->description }}</textarea><br>
                                 @error('description')
@@ -107,7 +117,7 @@
                                 @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Update Section</button>
+                            <button type="submit" class="btn btn-primary">Update Course</button>
                         </form>
                     </div>
                 </div>
