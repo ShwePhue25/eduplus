@@ -12,7 +12,7 @@
                     <div class="card-body">
                         <a href="{{ route('subcategories.create') }}" class="btn btn-primary mb-2">Add Subcategory</a>
 
-                        @if(session('success'))
+                        @if (session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
@@ -23,20 +23,29 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th>Category</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($subcategories as $subcategory)
+                                @foreach ($subcategories as $subcategory)
                                     <tr>
                                         <td>{{ $subcategory->id }}</td>
                                         <td>{{ $subcategory->name }}</td>
+                                        @forelse ($subcategory->categories as $category)
+                                            <td>{{ $category->name }}</td>
+                                        @empty
+                                            <td>No categories found</td>
+                                        @endforelse
                                         <td>
-                                            <a href="{{ route('subcategories.edit', $subcategory->id) }}" class="btn btn-sm btn-success">Edit</a>
-                                            <form action="{{ route('subcategories.destroy', $subcategory->id) }}" method="POST" class="d-inline">
+                                            <a href="{{ route('subcategories.edit', $subcategory->id) }}"
+                                                class="btn btn-sm btn-success">Edit</a>
+                                            <form action="{{ route('subcategories.destroy', $subcategory->id) }}"
+                                                method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this subcategory?')">Delete</button>
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this subcategory?')">Delete</button>
                                             </form>
                                         </td>
                                     </tr>

@@ -1,4 +1,4 @@
-<!-- subcategoriss.create.blade.php -->
+<!-- subcategories.create.blade.php -->
 
 @extends('layouts.app')
 
@@ -12,6 +12,21 @@
                     <div class="card-body">
                         <form action="{{ route('subcategories.store') }}" method="POST">
                             @csrf
+                            <div class="form-group">
+                                <label for="category_id">Select Category</label>
+                                <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
+                                    <option value="">Select a category</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>

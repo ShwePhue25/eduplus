@@ -8,19 +8,20 @@ use App\Models\Section;
 use App\Models\Teacher;
 use App\Models\Category;
 use App\Models\Classroom;
+use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class CourseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        $categories = Category::all();
-        $levels = Level::all();
-        $classrooms = Classroom::all();
-        $sections = Section::all();
-        $teachers = Teacher::all();
-        $courses = Course::with('categories', 'levels', 'classrooms','sections','teachers')
+        $courses = Course::with('categories', 'levels', 'classrooms','sections','teachers','subcategories')
             ->orderBy('id', 'desc')
             ->paginate(10);
 
@@ -34,66 +35,42 @@ class CourseController extends Controller
         $classrooms = Classroom::all();
         $sections = Section::all();
         $teachers = Teacher::all();
+        $subcategories = Subcategory::all();
 
-        return view('admin.courses.create', compact('categories','levels','sections','classrooms','teachers'));
+        return view('admin.courses.create', compact('categories','levels','sections','classrooms','teachers','subcategories'));
     }
 
     public function store(Request $request)
     {
-        $course = Course::create([
-            'course_name' => $request->input('course_name'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'period' => $request->input('period'),
-            'announce_date' => $request->input('announce_date'),
+        $data = $request->validate([
+            'course_name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'period' => 'required|string|max:255',
+            'announce_date' => 'required|date',
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
+            'subcategory_id' => 'required|array',
+            'subcategory_id.*' => 'exists:subcategories,id',
+            'level_id' => 'required|array',
+            'level_id.*' => 'exists:levels,id',
+            'classroom_id' => 'required|array',
+            'classroom_id.*' => 'exists:classrooms,id',
+            'section_id' => 'required|array',
+            'section_id.*' => 'exists:sections,id',
+            'teacher_id' => 'required|array',
+            'teacher_id.*' => 'exists:teachers,id',
         ]);
 
-        $course->categories()->attach($request->input('category_id'));
-        $course->levels()->attach($request->input('level_id'));
-        $course->classrooms()->attach($request->input('classroom_id'));
-        $course->sections()->attach($request->input('section_id'));
-        $course->teachers()->attach($request->input('teacher_id'));
+        $course = Course::create($data);
+
+        $course->categories()->attach($data['category_id']);
+        $course->subcategories()->attach($data['subcategory_id']);
+        $course->levels()->attach($data['level_id']);
+        $course->classrooms()->attach($data['classroom_id']);
+        $course->sections()->attach($data['section_id']);
+        $course->teachers()->attach($data['teacher_id']);
 
         return redirect()->route('courses.index')->with('classrooms');
-    }
-
-    public function edit($id)
-    {
-        $course = Course::with('categories')->findOrFail($id);
-        $categories = Category::all();
-        $levels = Level::all();
-        $classrooms = Classroom::all();
-        $sections = Section::all();
-        $teachers = Teacher::all();
-
-        return view('admin.courses.edit', compact('course', 'categories','levels','classrooms','sections','teachers'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $course = Course::findOrFail($id);
-        $course->update([
-            'course_name' => $request->input('course_name'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'period' => $request->input('period'),
-            'announce_date' => $request->input('announce_date'),
-        ]);
-
-        $course->categories()->sync($request->input('category_id'));
-        $course->levels()->sync($request->input('level_id'));
-        $course->classrooms()->sync($request->input('classroom_id'));
-        $course->sections()->sync($request->input('section_id'));
-        $course->teachers()->sync($request->input('teachers_id'));
-
-        return redirect()->route('courses.index');
-    }
-
-    public function destroy($id)
-    {
-        $course = Course::findOrFail($id);
-        $course->delete();
-
-        return redirect()->route('courses.index');
     }
 }

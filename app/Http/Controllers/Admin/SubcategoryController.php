@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Category;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,8 +16,10 @@ class SubcategoryController extends Controller
      */
     public function index()
     {
+        $categories = Category::all();
         $subcategories = Subcategory::all();
-        return view('admin.subcategories.index', compact('subcategories'));
+
+        return view('admin.subcategories.index', compact('subcategories','categories'));
     }
 
     /**
@@ -26,7 +29,9 @@ class SubcategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.subcategories.create');
+        $categories = Category::all();
+
+        return view('admin.subcategories.create', compact('categories'));
     }
 
     /**
@@ -37,9 +42,11 @@ class SubcategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $subcategory = new Subcategory();
-        $subcategory->name = $request->input('name');
-        $subcategory->save();
+        $subcategory = Subcategory::create([
+            'name' => $request->input('name'),
+        ]);
+
+        $subcategory->categories()->attach($request->input('category_id'));
 
         return redirect()->route('subcategories.index');
     }
@@ -53,7 +60,9 @@ class SubcategoryController extends Controller
     public function edit($id)
     {
         $subcategory = Subcategory::findOrFail($id);
-        return view('admin.subcategories.edit', compact('category'));
+        $categories = Category::all();
+
+        return view('admin.subcategories.edit', compact('subcategory','categories'));
     }
 
     /**
@@ -66,8 +75,12 @@ class SubcategoryController extends Controller
     public function update(Request $request, $id)
     {
         $subcategory = Subcategory::findOrFail($id);
-        $subcategory->name = $request->input('name');
-        $subcategory->save();
+
+        $subcategory->update([
+            'name' => $request->input('name'),
+        ]);
+
+        $subcategory->categories()->sync($request->input('category_id'));
 
         return redirect()->route('subcategories.index');
     }
@@ -80,9 +93,17 @@ class SubcategoryController extends Controller
      */
     public function destroy($id)
     {
-        $subcategory = Category::findOrFail($id);
+        $subcategory = Subcategory::findOrFail($id);
         $subcategory->delete();
 
         return redirect()->route('subcategories.index');
+    }
+
+    public function getSubcategoriesByCategory(Request $request)
+    {
+        $categoryId = $request->input('category_id');
+        $subcategories = Subcategory::where('category_id', $categoryId)->get();
+
+        return view('admin.subcategories.index');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Level;
+use App\Models\Video;
 use App\Models\Teacher;
 use App\Models\Category;
 use App\Models\Classroom;
@@ -58,5 +59,11 @@ class Course extends Model
     {
 
         return $this->belongsToMany(Teacher::class,'teacher_courses', 'course_id','teacher_id');
+    }
+
+    public function videos()
+    {
+
+        return $this->belongsToMany(Video::class,'courses_videos', 'course_id','video_id');
     }
 }
